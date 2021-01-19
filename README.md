@@ -6,6 +6,10 @@ and maintained here: https://github.com/ethersphere/swap-swear-and-swindle
 All significant code imported from the above repo. Only minor adjustments to
 hooking things up and illustrates things in a minimal fashion.
 
+## Running
+
+Ensure you have truffle and Ganache installed. Ganache should be running.
+
 ## TODOs
 
 - Import contracts and run migrations
