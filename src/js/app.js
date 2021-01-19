@@ -1,6 +1,7 @@
 App = {
   web3Provider: null,
   contracts: {},
+  aliceAddress: '0x0',
   account: '0x0',
 
   init: function() {
@@ -68,7 +69,8 @@ App = {
     });
   },
 
-  render: function() {
+  // NOTE: async, might want to pull some stuff out here
+  render: async function() {
     var electionInstance;
     var loader = $("#loader");
     var content = $("#content");
@@ -77,21 +79,22 @@ App = {
     content.hide();
 
     // Load account data
-    web3.eth.getCoinbase(function(err, account) {
-      console.log("getCoinbase", account, err);
-      if (err === null) {
-        App.account = account;
-        $("#accountAddress").html("Your Account: " + account);
-      }
-    });
+    aliceAddress = await web3.eth.accounts[0];
+    App.aliceAddress = aliceAddress;
+    $("#accountAddress").html("Your Account: " + aliceAddress);
+    console.log("aliceAddress", aliceAddress)
 
-    web3.eth.getCoinbase(function(err, account) {
-      console.log("getCoinbase", account, err);
-      if (err === null) {
-        App.account = account;
-        $("#accountAddress").html("Your Account: " + account);
-      }
-    });
+    web3.eth.getBalance(
+      App.aliceAddress,
+      function(err, res) {
+        if (err == null) {
+          console.log("Balance", res.toNumber())
+          aliceBalance = res.toNumber()
+          $("#aliceBalance").html("Alice Balance: " + aliceBalance);
+        } else {
+          console.log("Err", App.aliceAddress, err)
+        }
+      })
 
     // Load contract data
     // TODO Replace me
