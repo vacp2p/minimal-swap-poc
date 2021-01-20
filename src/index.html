@@ -25,15 +25,30 @@
               <p id="accountAddress"></p>
               <p id="aliceETHBalance"></p>
               <p id="aliceERC20Balance"></p>
-              <!-- TODO: Add a button here, show erc20 token balance, etc -->
 
-              <form onSubmit="App.mint(); return false;">
-                <button type="submit" class="btn btn-primary">Mint</button>
+              <p>
+                <form onSubmit="App.mint(); return false;">
+                  <button type="submit" class="btn btn-primary">Mint</button>
+                </form>
+              </p>
+
+              <p>
+              <form onSubmit="App.swapDeploy(); return false;">
+                <button type="submit" class="btn btn-primary">Swap Deploy</button>
               </form>
+              </p>
+
+              <p>
+              <form onSubmit="App.swapDeposit(); return false;">
+                <button type="submit" class="btn btn-primary">Swap Deposit</button>
+              </form>
+              </p>
 
             </div>
             <div id="aliceSwap">
               <h2>Alice Swap</h2>
+              <p id="aliceSwapAddress"></p>
+              <p id="aliceSwapBalance"></p>
             </div>
             <div id="bob">
               <h2>Bob</h2>

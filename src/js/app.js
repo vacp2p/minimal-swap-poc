@@ -2,6 +2,7 @@ App = {
   web3Provider: null,
   contracts: {},
   aliceAddress: '0x0',
+  aliceSwapAddress: '0x0',
   account: '0x0',
 
   init: function() {
@@ -58,7 +59,7 @@ App = {
   initContract: function() {
     // TODO Replace me
     $.getJSON("ERC20PresetMinterPauser.json", function(erc20) {
-      console.log("Hi!");
+      console.log("Init ERC20PresetMinterPauser");
       //console.log("Hi! ", erc20)
       // Instantiate a new truffle contract from the artifact
       App.contracts.ERC20PresetMinterPauser = TruffleContract(erc20);
@@ -67,6 +68,17 @@ App = {
 
       return App.render();
     });
+
+
+    $.getJSON("SimpleSwapFactory.json", function(factory) {
+      console.log("Init SimpleSwapFactory");
+      App.contracts.SimpleSwapFactory = TruffleContract(factory);
+      App.contracts.SimpleSwapFactory.setProvider(App.web3Provider);
+
+      return App.render();
+    });
+
+
   },
 
   // NOTE: async, might want to pull some stuff out here
@@ -95,12 +107,15 @@ App = {
         }
       })
 
-
     // Show ERC20 balance
     var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
     var erc20balance = await erc20.balanceOf(aliceAddress)
     console.log("ERC20 Balance ", erc20balance.toNumber())
     $("#aliceERC20Balance").html("ERC20 Balance: " + erc20balance.toNumber() + " TEST");
+
+    // Show Swap Balance
+    // XXX Should we deploy swap contract here? Easier to get address...
+    // Button for this?
 
     // Load contract data
     // TODO Replace me
@@ -137,7 +152,23 @@ App = {
     web3.eth.defaultAccount = web3.eth.accounts[0]
     var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
     var foo = await erc20.mint(App.aliceAddress, 10000)
+  },
+
+  swapDeploy: async function() {
+    console.log("swapDeploy")
+    web3.eth.defaultAccount = web3.eth.accounts[0]
+    var DEFAULT_HARDDEPOSIT_DECREASE_TIMEOUT = 86400
+    var simpleSwapFactory = await App.contracts.SimpleSwapFactory.deployed()
+    let { logs } = await simpleSwapFactory.deploySimpleSwap(App.aliceAddress, DEFAULT_HARDDEPOSIT_DECREASE_TIMEOUT)
+
+    var aliceSwapAddress = logs[0].args.contractAddress
+    App.aliceSwapAddress = aliceSwapAddress
+    console.log("aliceSwapAddress", aliceSwapAddress)
+    $("#aliceSwapAddress").html("Swap Address: " + aliceSwapAddress);
   }
+
+
+  // TODO swapDeposit function
 };
 
 $(function() {
