@@ -89,12 +89,18 @@ App = {
       function(err, res) {
         if (err == null) {
           aliceBalance = web3.fromWei(res.toNumber())
-          $("#aliceBalance").html("ETH Balance: " + aliceBalance + " ETH");
-          // TODO Add ERC20 Balance
+          $("#aliceETHBalance").html("ETH Balance: " + aliceBalance + " ETH");
         } else {
           console.log("Err", App.aliceAddress, err)
         }
       })
+
+
+    // Show ERC20 balance
+    var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
+    var erc20balance = await erc20.balanceOf(aliceAddress)
+    console.log("ERC20 Balance ", erc20balance.toNumber())
+    $("#aliceERC20Balance").html("ERC20 Balance: " + erc20balance.toNumber() + " TEST");
 
     // Load contract data
     // TODO Replace me
