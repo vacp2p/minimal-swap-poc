@@ -131,6 +131,12 @@ App = {
     }).catch(function(error) {
       console.warn(error);
     });
+  },
+
+  mint: async function () {
+    web3.eth.defaultAccount = web3.eth.accounts[0]
+    var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
+    var foo = await erc20.mint(App.aliceAddress, 10000)
   }
 };
 
