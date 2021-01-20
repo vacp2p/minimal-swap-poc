@@ -81,16 +81,16 @@ App = {
     // Load account data
     aliceAddress = await web3.eth.accounts[0];
     App.aliceAddress = aliceAddress;
-    $("#accountAddress").html("Your Account: " + aliceAddress);
+    $("#accountAddress").html("Address: " + aliceAddress);
     console.log("aliceAddress", aliceAddress)
 
     web3.eth.getBalance(
       App.aliceAddress,
       function(err, res) {
         if (err == null) {
-          console.log("Balance", res.toNumber())
-          aliceBalance = res.toNumber()
-          $("#aliceBalance").html("Alice Balance: " + aliceBalance);
+          aliceBalance = web3.fromWei(res.toNumber())
+          $("#aliceBalance").html("ETH Balance: " + aliceBalance + " ETH");
+          // TODO Add ERC20 Balance
         } else {
           console.log("Err", App.aliceAddress, err)
         }
