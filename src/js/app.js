@@ -210,7 +210,9 @@ App = {
   },
 
   // XXX - v3 or normal?
-  // Getting a params.data must be string error
+  // If we omit "_v3" we get:
+  // MetaMask - RPC Error: Invalid parameters: must provide an Ethereum address.
+  // Can problably solve by reading https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md more
   signTypedData: async function(eip712data, signee) {
     var json_data = JSON.stringify(eip712data)
     App.web3Provider.sendAsync(
@@ -273,6 +275,15 @@ App = {
     var swapContract = await App.contracts.ERC20SimpleSwap.at(App.aliceSwapAddress)
     var resp = await App.signChequeInternal(swapContract, bob, cumulativePayout, alice)
     console.log("Resp", resp)
+    // TODO Then do something with this cheque... Bob should be able to redeem it from swapAddress
+    // "0xaa2f167c993fd774bee484972a43e590d9240ef4cb798e2beb81a4a39f962e7c44ad175ceee80bae30726592ca74c9ab20275516a5d26b6c52aa8d16d4c0986c1c"
+
+    // TODO Should be able to do something like this from Bob's POV
+    // NOTE: This should be done from _Bob_ account, I believe
+    //const { logs, receipt } = await this.ERC20SimpleSwap.cashChequeBeneficiary(recipient, cumulativePayout, issuerSig, {from: from})
+    //this.logs = logs
+    //this.receipt = receipt
+
   }
 };
 
