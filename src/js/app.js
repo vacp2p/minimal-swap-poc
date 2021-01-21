@@ -184,12 +184,13 @@ App = {
     var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
     console.log("swapDeposit", erc20.address, App.aliceSwapAddress, App.aliceAddress)
     await erc20.transfer(App.aliceSwapAddress, 1000, {from: App.aliceAddress})
-    // XXX this doesn't exist
     var swapContract = await App.contracts.ERC20SimpleSwap.at(App.aliceSwapAddress)
-    var balance = await swapContract.balance()
-    // XXX: Balance looks like a transaction object here, we want the actual balance
-    // It is working though, because ERC20 has been withdrawn
-    // Signins two transactions for some reason?
+    //var balance = await swapContract.balance()
+    // TODO Get balance to show up
+    // Current hypothesis is that while it is a public function, it is using address(this)
+    // Which means it is using address of caller, not contract (?)
+    // In stead, we can do this:
+    var balance = (await erc20.balanceOf(App.aliceSwapAddress)).toNumber()
     console.log("swapBalance", balance)
     $("#aliceSwapBalance").html("Swap Balance: " + balance);
   }
