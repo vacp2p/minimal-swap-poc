@@ -2,7 +2,8 @@ App = {
   web3Provider: null,
   contracts: {},
   aliceAddress: '0x0',
-  aliceSwapAddress: '0x0',
+  //aliceSwapAddress: '0x0',
+  aliceSwapAddress: '0x7f0267a894791ce2e14a1e56d88bcfc3cc561664',
   account: '0x0',
 
   init: function() {
@@ -116,7 +117,6 @@ App = {
         }
       })
 
-
     // Show ERC20 balance
     // XXX: Not quite sure why it says App.contracts.ERC20PresetMinterPauser is undefiend? Sometimes...
     var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
@@ -124,15 +124,9 @@ App = {
     console.log("ERC20 Balance ", erc20balance.toNumber())
     $("#aliceERC20Balance").html("ERC20 Balance: " + erc20balance.toNumber() + " TEST");
 
-    // Show Swap Balance
-    // XXX Should we deploy swap contract here? Easier to get address...
-    // Button for this?
-
-
-    // Assuming received
-    //    App.aliceSwapAddress = aliceSwapAddress
-    //    console.log("aliceSwapAddress", aliceSwapAddress)
-    //$("#aliceSwapAddress").html("Swap Address: " + App.aliceSwapAddress);
+    // NOTE: Hadcoding swapAddress, assuming deployed
+    console.log("aliceSwapAddress", App.aliceSwapAddress)
+    $("#aliceSwapAddress").html("Swap Address: " + App.aliceSwapAddress);
 
     // Load contract data
     // TODO Replace me
