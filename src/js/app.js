@@ -1,9 +1,23 @@
+const EIP712Domain = [
+  { name: 'name', type: 'string' },
+  { name: 'version', type: 'string' },
+  { name: 'chainId', type: 'uint256' }
+]
+
+const ChequeType = [
+  { name: 'chequebook', type: 'address' },
+  { name: 'beneficiary', type: 'address' },
+  { name: 'cumulativePayout', type: 'uint256' }
+]
+
 App = {
   web3Provider: null,
   contracts: {},
   aliceAddress: '0x0',
   //aliceSwapAddress: '0x0',
+  // XXX Hardcoded
   aliceSwapAddress: '0x7f0267a894791ce2e14a1e56d88bcfc3cc561664',
+  bobAddress: '0xF059F8F8D92f89F15cFF3A2B85a9b2E32Ac6295b',
   account: '0x0',
 
   init: function() {
@@ -193,6 +207,72 @@ App = {
     var balance = (await erc20.balanceOf(App.aliceSwapAddress)).toNumber()
     console.log("swapBalance", balance)
     $("#aliceSwapBalance").html("Swap Balance: " + balance);
+  },
+
+  // XXX - v3 or normal?
+  // Getting a params.data must be string error
+  signTypedData: async function(eip712data, signee) {
+    var json_data = JSON.stringify(eip712data)
+    App.web3Provider.sendAsync(
+      {method: "eth_signTypedData_v3",
+       params: [signee, json_data],
+       from: signee
+      },
+      function(err, res) {
+        if (err) {
+          console.log("Error", err)
+        } else {
+          console.log("Res", res)
+        }
+      });
+  },
+  // Swap code looks like this
+    // return new Promise((resolve, reject) =>
+    //   web3.currentProvider.send({
+    //     method: 'eth_signTypedData',
+    //     params: [signee, eip712data]
+    //   },
+
+  // the chainId is set to 1 due to bug in ganache where the wrong id is reported via rpc
+  signChequeInternal: async function signCheque(swap, beneficiary, cumulativePayout, signee, chainId = 1337) {
+    console.log("signChequeInternal", beneficiary, signee)
+      const cheque = {
+        chequebook: swap.address,
+        beneficiary,
+        //cumulativePayout: cumulativePayout.toNumber()
+        cumulativePayout: cumulativePayout
+      }
+
+    console.log("Cheque", cheque)
+
+      const eip712data = {
+        types: {
+          EIP712Domain,
+          Cheque: ChequeType
+        },
+        domain: {
+          name: "Chequebook",
+          version: "1.0",
+          chainId
+        },
+        primaryType: 'Cheque',
+        message: cheque
+      }
+
+    console.log("eip712data", eip712data, signee)
+    return App.signTypedData(eip712data, signee)
+  },
+
+  signCheque: async function() {
+    console.log("signCheque")
+    //var cumulativePayout = new BN(500)
+    var cumulativePayout = 500
+    // TODO: Here at the moment, let's include this, etc
+    var alice = App.aliceAddress
+    var bob = App.bobAddress
+    var swapContract = await App.contracts.ERC20SimpleSwap.at(App.aliceSwapAddress)
+    var resp = await App.signChequeInternal(swapContract, bob, cumulativePayout, alice)
+    console.log("Resp", resp)
   }
 };
 
