@@ -52,6 +52,7 @@ App = {
     //   web3 = new Web3(App.web3Provider);
     // }
 
+    web3.eth.defaultAccount = web3.eth.accounts[0]
     return App.initContract();
 
   },
@@ -78,6 +79,14 @@ App = {
       return App.render();
     });
 
+    // NOTE: This is only one contract, but we are deploying it twice
+    $.getJSON("ERC20SimpleSwap.json", function(swap) {
+      console.log("Init ERC20SimpleSwap");
+      App.contracts.ERC20SimpleSwap = TruffleContract(swap);
+      App.contracts.ERC20SimpleSwap.setProvider(App.web3Provider);
+
+      return App.render();
+    });
 
   },
 
@@ -107,7 +116,9 @@ App = {
         }
       })
 
+
     // Show ERC20 balance
+    // XXX: Not quite sure why it says App.contracts.ERC20PresetMinterPauser is undefiend? Sometimes...
     var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
     var erc20balance = await erc20.balanceOf(aliceAddress)
     console.log("ERC20 Balance ", erc20balance.toNumber())
@@ -116,6 +127,12 @@ App = {
     // Show Swap Balance
     // XXX Should we deploy swap contract here? Easier to get address...
     // Button for this?
+
+
+    // Assuming received
+    //    App.aliceSwapAddress = aliceSwapAddress
+    //    console.log("aliceSwapAddress", aliceSwapAddress)
+    //$("#aliceSwapAddress").html("Swap Address: " + App.aliceSwapAddress);
 
     // Load contract data
     // TODO Replace me
@@ -149,26 +166,39 @@ App = {
   },
 
   mint: async function () {
-    web3.eth.defaultAccount = web3.eth.accounts[0]
+    //web3.eth.defaultAccount = web3.eth.accounts[0]
     var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
     var foo = await erc20.mint(App.aliceAddress, 10000)
   },
 
   swapDeploy: async function() {
     console.log("swapDeploy")
-    web3.eth.defaultAccount = web3.eth.accounts[0]
+    //web3.eth.defaultAccount = web3.eth.accounts[0]
     var DEFAULT_HARDDEPOSIT_DECREASE_TIMEOUT = 86400
     var simpleSwapFactory = await App.contracts.SimpleSwapFactory.deployed()
     let { logs } = await simpleSwapFactory.deploySimpleSwap(App.aliceAddress, DEFAULT_HARDDEPOSIT_DECREASE_TIMEOUT)
 
+    // XXX: Ensure this is persisted
     var aliceSwapAddress = logs[0].args.contractAddress
     App.aliceSwapAddress = aliceSwapAddress
     console.log("aliceSwapAddress", aliceSwapAddress)
     $("#aliceSwapAddress").html("Swap Address: " + aliceSwapAddress);
+  },
+
+  swapDeposit: async function() {
+    web3.eth.defaultAccount = web3.eth.accounts[0]
+    var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
+    console.log("swapDeposit", erc20.address, App.aliceSwapAddress, App.aliceAddress)
+    await erc20.transfer(App.aliceSwapAddress, 1000, {from: App.aliceAddress})
+    // XXX this doesn't exist
+    var swapContract = await App.contracts.ERC20SimpleSwap.at(App.aliceSwapAddress)
+    var balance = await swapContract.balance()
+    // XXX: Balance looks like a transaction object here, we want the actual balance
+    // It is working though, because ERC20 has been withdrawn
+    // Signins two transactions for some reason?
+    console.log("swapBalance", balance)
+    $("#aliceSwapBalance").html("Swap Balance: " + balance);
   }
-
-
-  // TODO swapDeposit function
 };
 
 $(function() {
