@@ -215,25 +215,22 @@ App = {
   // Can problably solve by reading https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md more
   signTypedData: async function(eip712data, signee) {
     var json_data = JSON.stringify(eip712data)
-    App.web3Provider.sendAsync(
-      {method: "eth_signTypedData_v3",
-       params: [signee, json_data],
-       from: signee
-      },
-      function(err, res) {
+
+    return new Promise((resolve, reject) =>
+      web3.currentProvider.send({
+        method: 'eth_signTypedData_v3',
+        params: [signee, json_data]
+      }, function (err, resp) {
         if (err) {
           console.log("Error", err)
+          reject(err)
         } else {
-          console.log("Res", res)
+          console.log("Response", resp)
+          resolve(resp)
         }
-      });
+      }))
+
   },
-  // Swap code looks like this
-    // return new Promise((resolve, reject) =>
-    //   web3.currentProvider.send({
-    //     method: 'eth_signTypedData',
-    //     params: [signee, eip712data]
-    //   },
 
   // the chainId is set to 1 due to bug in ganache where the wrong id is reported via rpc
   signChequeInternal: async function signCheque(swap, beneficiary, cumulativePayout, signee, chainId = 1337) {
@@ -261,7 +258,6 @@ App = {
         message: cheque
       }
 
-    console.log("eip712data", eip712data, signee)
     return App.signTypedData(eip712data, signee)
   },
 
@@ -273,8 +269,11 @@ App = {
     var alice = App.aliceAddress
     var bob = App.bobAddress
     var swapContract = await App.contracts.ERC20SimpleSwap.at(App.aliceSwapAddress)
-    var resp = await App.signChequeInternal(swapContract, bob, cumulativePayout, alice)
-    console.log("Resp", resp)
+    var response = await App.signChequeInternal(swapContract, bob, cumulativePayout, alice)
+    var cheque = response.result
+    console.log("Cheque", cheque)
+    $("#aliceCheque").html("Cheque issued: " + cheque);
+    // TODO add cheque here
     // TODO Then do something with this cheque... Bob should be able to redeem it from swapAddress
     // "0xaa2f167c993fd774bee484972a43e590d9240ef4cb798e2beb81a4a39f962e7c44ad175ceee80bae30726592ca74c9ab20275516a5d26b6c52aa8d16d4c0986c1c"
 
@@ -292,3 +291,6 @@ $(function() {
     App.init();
   });
 });
+
+// This is a cheque Bob can use
+// 0xaa2f167c993fd774bee484972a43e590d9240ef4cb798e2beb81a4a39f962e7c44ad175ceee80bae30726592ca74c9ab20275516a5d26b6c52aa8d16d4c0986c1c
