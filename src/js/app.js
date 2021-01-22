@@ -16,8 +16,11 @@ App = {
   aliceAddress: '0x0',
   //aliceSwapAddress: '0x0',
   // XXX Hardcoded
+  // This is a problem where we are trying to act as Bob...
+  //aliceAddress: '0xf059f8f8d92f89f15cff3a2b85a9b2e32ac6295b',
   aliceSwapAddress: '0x7f0267a894791ce2e14a1e56d88bcfc3cc561664',
   bobAddress: '0xF059F8F8D92f89F15cFF3A2B85a9b2E32Ac6295b',
+  bobSwapAddress: '0x7175f498fd8f1ceef2fbf7100f17dbb00df5ce42',
   account: '0x0',
 
   init: function() {
@@ -283,6 +286,24 @@ App = {
     //this.logs = logs
     //this.receipt = receipt
 
+  },
+
+  redeemCheque: async function() {
+    console.log("redeemCheque")
+    // XXX Which contract to use here?
+    var cumulativePayout = 500
+    //var swapContract = await App.contracts.ERC20SimpleSwap.at(App.aliceSwapAddress)
+    var swapContract = await App.contracts.ERC20SimpleSwap.at(App.bobSwapAddress)
+    var issuerSig = "0xaa2f167c993fd774bee484972a43e590d9240ef4cb798e2beb81a4a39f962e7c44ad175ceee80bae30726592ca74c9ab20275516a5d26b6c52aa8d16d4c0986c1c"
+    // XXX Why do we need from?
+    var recipient = App.bobAddress
+    // XXX?
+    var from = App.aliceAddress
+    console.log("Redeem cheque pre", recipient, cumulativePayout, issuerSig, from)
+
+    // XXX: This goes through but I don't see anything in Bob address
+    const { logs, receipt } = await swapContract.cashChequeBeneficiary(recipient, cumulativePayout, issuerSig, {from: from})
+    console.log("Redeem cheque", logs, receipt)
   }
 };
 
