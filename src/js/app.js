@@ -159,60 +159,42 @@ App = {
     // XXX: Not quite sure why it says App.contracts.ERC20PresetMinterPauser is undefined? Sometimes...
     var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
 
-    // Get Alice ERC20 balance
+    // Get Alice and Bob ERC20 balance
     var aliceERC20Balance = await erc20.balanceOf(App.aliceAddress)
     console.log("ERC20 Balance ", aliceERC20Balance.toNumber())
     $("#aliceERC20Balance").html("ERC20 Balance: " + aliceERC20Balance.toNumber() + " TEST");
 
-    // Get Bob ERC20 balance
     var bobERC20Balance = await erc20.balanceOf(App.bobAddress)
     console.log("ERC20 Balance ", bobERC20Balance.toNumber())
     $("#bobERC20Balance").html("ERC20 Balance: " + bobERC20Balance.toNumber() + " TEST");
 
-    // TODO Show balance as well
     // NOTE: Hadcoding swapAddress, assuming deployed
+
+    // Show Alice and Bob Swap address
     console.log("aliceSwapAddress", App.aliceSwapAddress)
     $("#aliceSwapAddress").html("Swap Address: " + App.aliceSwapAddress);
 
-
-    // TODO Not using this yet I believe, implement
-    // Might help with withdrawal too?
     console.log("bobSwapAddress", App.bobSwapAddress)
     $("#bobSwapAddress").html("Swap Address: " + App.bobSwapAddress);
 
+    // Show Alice and Bob Swap balance
     var aliceSwapBalance = (await erc20.balanceOf(App.aliceSwapAddress)).toNumber()
-    console.log("aliceSwapBalance", balance)
+    console.log("aliceSwapBalance", bobSwapBalance)
     $("#aliceSwapBalance").html("Swap Balance: " + aliceSwapBalance + " TEST");
 
+    var bobSwapBalance = (await erc20.balanceOf(App.bobSwapAddress)).toNumber()
+    console.log("bobSwapBalance", bobSwapBalance)
+    $("#bobSwapBalance").html("Swap Balance: " + bobSwapBalance + " TEST");
+
     // Load contract data
-    // TODO Replace me
     App.contracts.ERC20PresetMinterPauser.deployed().then(function(erc20) {
-      // electionInstance = instance;
-      //return electionInstance.candidatesCount();
-    //}).then(function(candidatesCount) {
-    }).then(function(candidatesCount) {
-      var swapResults = $("#swapResults");
-      //candidatesResults.empty();
-
-      // TODO Add balance here
-      swapResults.append("foobar");
-      // for (var i = 1; i <= candidatesCount; i++) {
-      //   electionInstance.candidates(i).then(function(candidate) {
-      //     var id = candidate[0];
-      //     var name = candidate[1];
-      //     var voteCount = candidate[2];
-
-      //     // Render candidate Result
-      //     var candidateTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + voteCount + "</td></tr>"
-      //     candidatesResults.append(candidateTemplate);
-      //   });
-      // }
-
+    }).then(function(x) {
       loader.hide();
       content.show();
     }).catch(function(error) {
       console.warn(error);
     });
+
   },
 
   mint: async function () {
