@@ -117,11 +117,18 @@ App = {
     loader.show();
     content.hide();
 
+    // Mark current address to not confuse Alice and Bob
+    currentAddress = await web3.eth.accounts[0];
+    $("#currentAddress").html("Address: " + currentAddress);
+    console.log("currentAddress", currentAddress);
+
     // Load account data
+    // XXX Assuming first account is Alice, not true when switching accounts
     aliceAddress = await web3.eth.accounts[0];
     App.aliceAddress = aliceAddress;
-    $("#accountAddress").html("Address: " + aliceAddress);
+    $("#aliceAddress").html("Address: " + aliceAddress);
     console.log("aliceAddress", aliceAddress)
+
 
     web3.eth.getBalance(
       App.aliceAddress,

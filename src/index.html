@@ -20,9 +20,15 @@
             <p class="text-center">Loading...</p>
           </div>
           <div id="content" style="display: none;">
+
+            <div id="current">
+              <h2>Current account</h2>
+              <p id="currentAddress"></p>
+              </div>
+
             <div id="alice">
               <h2>Alice</h2>
-              <p id="accountAddress"></p>
+              <p id="aliceAddress"></p>
               <p id="aliceETHBalance"></p>
               <p id="aliceERC20Balance"></p>
 
@@ -59,7 +65,9 @@
             </div>
             <div id="bob">
               <h2>Bob</h2>
-
+              <p id="bobAddress"></p>
+              <p id="bobETHBalance"></p>
+              <p id="bobERC20Balance"></p>
               <p>
               <form onSubmit="App.redeemCheque(); return false;">
                 <button type="submit" class="btn btn-primary">Redeem cheque</button>

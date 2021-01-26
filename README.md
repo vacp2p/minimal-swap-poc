@@ -24,10 +24,11 @@ truffle console
 npm run dev
 ```
 
+
 ## TODOs
 
 x Import contracts and run migrations
 x Setup basic UI
-- Showcase basic chequebook end to end (deposit, show balance, withdraw)
+x Showcase basic chequebook end to end (deposit, show balance, withdraw)
 - Get basic cheque sending working (web3 provider, util code)
 - Showcase swap basic operation for two nodes
