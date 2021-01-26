@@ -13,11 +13,10 @@ const ChequeType = [
 App = {
   web3Provider: null,
   contracts: {},
-  aliceAddress: '0x0',
+  //aliceAddress: '0x0',
   //aliceSwapAddress: '0x0',
-  // XXX Hardcoded
-  // This is a problem where we are trying to act as Bob...
-  //aliceAddress: '0xf059f8f8d92f89f15cff3a2b85a9b2e32ac6295b',
+  // XXX Hardcoded, makes PoC simpler so you just switch in Metamask, can load dynamically too
+  aliceAddress: '0xd2136b7e13d5653fe8be1765f871c3815bad98b2',
   aliceSwapAddress: '0x7f0267a894791ce2e14a1e56d88bcfc3cc561664',
   bobAddress: '0xF059F8F8D92f89F15cFF3A2B85a9b2E32Ac6295b',
   bobSwapAddress: '0x7175f498fd8f1ceef2fbf7100f17dbb00df5ce42',
@@ -124,11 +123,14 @@ App = {
 
     // Load account data
     // XXX Assuming first account is Alice, not true when switching accounts
-    aliceAddress = await web3.eth.accounts[0];
-    App.aliceAddress = aliceAddress;
-    $("#aliceAddress").html("Address: " + aliceAddress);
-    console.log("aliceAddress", aliceAddress)
+    //aliceAddress = await web3.eth.accounts[0];
+    //App.aliceAddress = aliceAddress;
+    //$("#aliceAddress").html("Address: " + aliceAddress);
+    //console.log("aliceAddress", aliceAddress)
 
+    // Assume we have manually populated this
+    $("#aliceAddress").html("Address: " + App.aliceAddress);
+    $("#bobAddress").html("Address: " + App.bobAddress);
 
     web3.eth.getBalance(
       App.aliceAddress,
@@ -144,7 +146,7 @@ App = {
     // Show ERC20 balance
     // XXX: Not quite sure why it says App.contracts.ERC20PresetMinterPauser is undefiend? Sometimes...
     var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
-    var erc20balance = await erc20.balanceOf(aliceAddress)
+    var erc20balance = await erc20.balanceOf(App.aliceAddress)
     console.log("ERC20 Balance ", erc20balance.toNumber())
     $("#aliceERC20Balance").html("ERC20 Balance: " + erc20balance.toNumber() + " TEST");
 
