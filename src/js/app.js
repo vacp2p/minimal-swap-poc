@@ -174,10 +174,15 @@ App = {
     console.log("aliceSwapAddress", App.aliceSwapAddress)
     $("#aliceSwapAddress").html("Swap Address: " + App.aliceSwapAddress);
 
+
     // TODO Not using this yet I believe, implement
     // Might help with withdrawal too?
-    //console.log("aliceSwapAddress", App.aliceSwapAddress)
-    //$("#bobSwapAddress").html("Swap Address: " + App.bobSwapAddress);
+    console.log("bobSwapAddress", App.bobSwapAddress)
+    $("#bobSwapAddress").html("Swap Address: " + App.bobSwapAddress);
+
+    var aliceSwapBalance = (await erc20.balanceOf(App.aliceSwapAddress)).toNumber()
+    console.log("aliceSwapBalance", balance)
+    $("#aliceSwapBalance").html("Swap Balance: " + aliceSwapBalance + " TEST");
 
     // Load contract data
     // TODO Replace me
@@ -240,7 +245,8 @@ App = {
     // TODO Get balance to show up
     // Current hypothesis is that while it is a public function, it is using address(this)
     // Which means it is using address of caller, not contract (?)
-    // In stead, we can do this:
+    // Instead, we can do this:
+    // XXX this can happen earlier
     var balance = (await erc20.balanceOf(App.aliceSwapAddress)).toNumber()
     console.log("swapBalance", balance)
     $("#aliceSwapBalance").html("Swap Balance: " + balance);
