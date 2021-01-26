@@ -132,27 +132,52 @@ App = {
     $("#aliceAddress").html("Address: " + App.aliceAddress);
     $("#bobAddress").html("Address: " + App.bobAddress);
 
+    // Get Alice Balance
     web3.eth.getBalance(
       App.aliceAddress,
       function(err, res) {
         if (err == null) {
-          aliceBalance = web3.fromWei(res.toNumber())
-          $("#aliceETHBalance").html("ETH Balance: " + aliceBalance + " ETH");
+          balance = web3.fromWei(res.toNumber())
+          $("#aliceETHBalance").html("ETH Balance: " + balance + " ETH");
         } else {
           console.log("Err", App.aliceAddress, err)
         }
       })
 
-    // Show ERC20 balance
-    // XXX: Not quite sure why it says App.contracts.ERC20PresetMinterPauser is undefiend? Sometimes...
-    var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
-    var erc20balance = await erc20.balanceOf(App.aliceAddress)
-    console.log("ERC20 Balance ", erc20balance.toNumber())
-    $("#aliceERC20Balance").html("ERC20 Balance: " + erc20balance.toNumber() + " TEST");
+    // Get Bob Balance
+    web3.eth.getBalance(
+      App.bobAddress,
+      function(err, res) {
+        if (err == null) {
+          balance = web3.fromWei(res.toNumber())
+          $("#bobETHBalance").html("ETH Balance: " + balance + " ETH");
+        } else {
+          console.log("Err", App.bobAddress, err)
+        }
+      })
 
+    // XXX: Not quite sure why it says App.contracts.ERC20PresetMinterPauser is undefined? Sometimes...
+    var erc20 = await App.contracts.ERC20PresetMinterPauser.deployed()
+
+    // Get Alice ERC20 balance
+    var aliceERC20Balance = await erc20.balanceOf(App.aliceAddress)
+    console.log("ERC20 Balance ", aliceERC20Balance.toNumber())
+    $("#aliceERC20Balance").html("ERC20 Balance: " + aliceERC20Balance.toNumber() + " TEST");
+
+    // Get Bob ERC20 balance
+    var bobERC20Balance = await erc20.balanceOf(App.bobAddress)
+    console.log("ERC20 Balance ", bobERC20Balance.toNumber())
+    $("#bobERC20Balance").html("ERC20 Balance: " + bobERC20Balance.toNumber() + " TEST");
+
+    // TODO Show balance as well
     // NOTE: Hadcoding swapAddress, assuming deployed
     console.log("aliceSwapAddress", App.aliceSwapAddress)
     $("#aliceSwapAddress").html("Swap Address: " + App.aliceSwapAddress);
+
+    // TODO Not using this yet I believe, implement
+    // Might help with withdrawal too?
+    //console.log("aliceSwapAddress", App.aliceSwapAddress)
+    //$("#bobSwapAddress").html("Swap Address: " + App.bobSwapAddress);
 
     // Load contract data
     // TODO Replace me
