@@ -18,7 +18,7 @@ App = {
   // XXX Hardcoded, makes PoC simpler so you just switch in Metamask, can load dynamically too
   aliceAddress: '0xd2136b7e13d5653fe8be1765f871c3815bad98b2',
   aliceSwapAddress: '0x7f0267a894791ce2e14a1e56d88bcfc3cc561664',
-  bobAddress: '0xF059F8F8D92f89F15cFF3A2B85a9b2E32Ac6295b',
+  bobAddress: '0xf059f8f8d92f89f15cff3a2b85a9b2e32ac6295b',
   bobSwapAddress: '0x7175f498fd8f1ceef2fbf7100f17dbb00df5ce42',
   account: '0x0',
 
