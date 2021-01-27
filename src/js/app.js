@@ -137,7 +137,7 @@ App = {
       App.aliceAddress,
       function(err, res) {
         if (err == null) {
-          balance = web3.fromWei(res.toNumber())
+          balance = web3.utils.fromWei(res)
           $("#aliceETHBalance").html("ETH Balance: " + balance + " ETH");
         } else {
           console.log("Err", App.aliceAddress, err)
@@ -149,7 +149,7 @@ App = {
       App.bobAddress,
       function(err, res) {
         if (err == null) {
-          balance = web3.fromWei(res.toNumber())
+          balance = web3.utils.fromWei(res)
           $("#bobETHBalance").html("ETH Balance: " + balance + " ETH");
         } else {
           console.log("Err", App.bobAddress, err)
