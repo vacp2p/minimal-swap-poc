@@ -238,13 +238,17 @@ App = {
   // If we omit "_v3" we get:
   // MetaMask - RPC Error: Invalid parameters: must provide an Ethereum address.
   // Can problably solve by reading https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md more
+  // See: https://docs.metamask.io/guide/signing-data.html#sign-typed-data-v1
   signTypedData: async function(eip712data, signee) {
     var json_data = JSON.stringify(eip712data)
+    var from = signee
 
     return new Promise((resolve, reject) =>
+      // XXX can also do sendAsync hree
       web3.currentProvider.send({
         method: 'eth_signTypedData_v3',
-        params: [signee, json_data]
+        params: [signee, json_data],
+        from: from
       }, function (err, resp) {
         if (err) {
           console.log("Error", err)
